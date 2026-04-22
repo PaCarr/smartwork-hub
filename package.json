@@ -1,0 +1,11 @@
+{
+  "name": "smartwork-hub",
+  "version": "1.0.0",
+  "description": "Distributed systems project for Decent Work and Economic Growth using Node.js and gRPC.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

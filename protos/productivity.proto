@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package productivity;
+
+service ProductivityService {
+  rpc CreateTask(TaskRequest) returns (TaskResponse);
+  rpc StreamTaskProgress(TaskProgressRequest) returns (stream TaskProgressUpdate);
+  rpc SubmitWorkLogs(stream WorkLog) returns (WorkLogSummary);
+  rpc LiveTaskCollaboration(stream CollaborationMessage) returns (stream CollaborationMessage);
+}
+
+message TaskRequest {
+  string task_id = 1;
+  string employee_id = 2;
+  string employee_name = 3;
+  string task_name = 4;
+  string deadline = 5;
+}
+
+message TaskResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message TaskProgressRequest {
+  string employee_id = 1;
+}
+
+message TaskProgressUpdate {
+  string task_id = 1;
+  string task_name = 2;
+  int32 progress_percent = 3;
+  string status = 4;
+}
+
+message WorkLog {
+  string employee_id = 1;
+  string employee_name = 2;
+  string task_id = 3;
+  int32 hours_worked = 4;
+  string output_description = 5;
+}
+
+message WorkLogSummary {
+  int32 total_entries = 1;
+  int32 total_hours = 2;
+  string productivity_message = 3;
+}
+
+message CollaborationMessage {
+  string sender = 1;
+  string message = 2;
+  string task_id = 3;
+  string timestamp = 4;
+}

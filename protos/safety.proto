@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package safety;
+
+service SafetyService {
+  rpc ReportHazard(HazardRequest) returns (HazardResponse);
+  rpc StreamSafetyAlerts(AlertRequest) returns (stream SafetyAlert);
+  rpc UploadSafetyChecks(stream SafetyCheck) returns (SafetyCheckSummary);
+  rpc LiveEmergencyChannel(stream EmergencyMessage) returns (stream EmergencyMessage);
+}
+
+message HazardRequest {
+  string hazard_id = 1;
+  string location = 2;
+  string description = 3;
+  int32 severity = 4;
+}
+
+message HazardResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AlertRequest {
+  string location = 1;
+}
+
+message SafetyAlert {
+  string alert_id = 1;
+  string location = 2;
+  string description = 3;
+  string status = 4;
+}
+
+message SafetyCheck {
+  string check_id = 1;
+  string inspector_name = 2;
+  string area = 3;
+  bool passed = 4;
+}
+
+message SafetyCheckSummary {
+  int32 total_checks = 1;
+  int32 passed_checks = 2;
+  int32 failed_checks = 3;
+  string message = 4;
+}
+
+message EmergencyMessage {
+  string sender = 1;
+  string message = 2;
+  string level = 3;
+  string timestamp = 4;
+}

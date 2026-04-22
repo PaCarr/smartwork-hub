@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package shift;
+
+service ShiftService {
+  rpc AssignShift(AssignShiftRequest) returns (ShiftResponse);
+  rpc StreamScheduleUpdates(ScheduleRequest) returns (stream ShiftUpdate);
+  rpc SubmitShiftLogs(stream ShiftLog) returns (ShiftLogSummary);
+  rpc LiveShiftSupport(stream ShiftChatMessage) returns (stream ShiftChatMessage);
+}
+
+message AssignShiftRequest {
+  string employee_id = 1;
+  string employee_name = 2;
+  string shift_date = 3;
+  string shift_time = 4;
+  string role = 5;
+}
+
+message ShiftResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ScheduleRequest {
+  string shift_date = 1;
+}
+
+message ShiftUpdate {
+  string employee_name = 1;
+  string shift_time = 2;
+  string role = 3;
+  string update_message = 4;
+}
+
+message ShiftLog {
+  string employee_id = 1;
+  string employee_name = 2;
+  string date = 3;
+  int32 hours_worked = 4;
+}
+
+message ShiftLogSummary {
+  int32 total_logs = 1;
+  int32 total_hours = 2;
+  string message = 3;
+}
+
+message ShiftChatMessage {
+  string sender = 1;
+  string message = 2;
+  string timestamp = 3;
+}
