@@ -45,7 +45,8 @@ function main() {
   const server = new grpc.Server();
 
   server.addService(shiftProto.ShiftService.service, {
-    AssignShift: assignShift
+    AssignShift: assignShift,
+    StreamScheduleUpdates: streamScheduleUpdates
   });
 
   server.bindAsync(
@@ -56,6 +57,40 @@ function main() {
       server.start();
     }
   );
+}
+
+function streamScheduleUpdates(call) {
+  const { shift_date } = call.request;
+
+  const filteredShifts = shifts.filter(
+    shift => shift.shift_date === shift_date
+  );
+
+  filteredShifts.forEach((shift, index) => {
+    setTimeout(() => {
+      call.write({
+        employee_name: shift.employee_name,
+        shift_time: shift.shift_time,
+        role: shift.role,
+        update_message: "Scheduled shift"
+      });
+
+      // End stream after last item
+      if (index === filteredShifts.length - 1) {
+        call.end();
+      }
+    }, index * 1000); // delay to simulate streaming
+  });
+
+  if (filteredShifts.length === 0) {
+    call.write({
+      employee_name: "",
+      shift_time: "",
+      role: "",
+      update_message: "No shifts found for this date"
+    });
+    call.end();
+  }
 }
 
 main();
