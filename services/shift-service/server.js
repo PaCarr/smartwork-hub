@@ -44,18 +44,23 @@ function assignShift(call, callback) {
 function main() {
   const server = new grpc.Server();
 
-  server.addService(shiftProto.ShiftService.service, {
+server.addService(shiftProto.ShiftService.service, {
   AssignShift: assignShift,
   StreamScheduleUpdates: streamScheduleUpdates,
-  SubmitShiftLogs: submitShiftLogs
+  SubmitShiftLogs: submitShiftLogs,
+  LiveShiftSupport: liveShiftSupport
   });
 
   server.bindAsync(
     '0.0.0.0:50051',
     grpc.ServerCredentials.createInsecure(),
-    () => {
-      console.log("Shift Service running on port 50051");
-      server.start();
+    (error, port) => {
+      if (error) {
+        console.error("Failed to start Shift Service:", error);
+        return;
+      }
+
+      console.log(`Shift Service running on port ${port}`);
     }
   );
 }
@@ -119,4 +124,26 @@ function submitShiftLogs(call, callback) {
     console.error("Error receiving logs:", err);
   });
 }
+
+function liveShiftSupport(call) {
+  call.on('data', (message) => {
+    console.log("Received message:", message);
+
+    call.write({
+      sender: "Server",
+      message: `Received: ${message.message}`,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  call.on('end', () => {
+    console.log("Client ended chat");
+    call.end();
+  });
+
+  call.on('error', (err) => {
+    console.error("Error in chat:", err);
+  });
+}
+
 main();
