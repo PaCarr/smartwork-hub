@@ -45,8 +45,9 @@ function main() {
   const server = new grpc.Server();
 
   server.addService(shiftProto.ShiftService.service, {
-    AssignShift: assignShift,
-    StreamScheduleUpdates: streamScheduleUpdates
+  AssignShift: assignShift,
+  StreamScheduleUpdates: streamScheduleUpdates,
+  SubmitShiftLogs: submitShiftLogs
   });
 
   server.bindAsync(
@@ -93,4 +94,29 @@ function streamScheduleUpdates(call) {
   }
 }
 
+function submitShiftLogs(call, callback) {
+  let totalHours = 0;
+  let totalLogs = 0;
+
+  call.on('data', (log) => {
+    console.log("Received log:", log);
+
+    totalLogs++;
+    totalHours += log.hours_worked;
+  });
+
+  call.on('end', () => {
+    console.log("All logs received");
+
+    callback(null, {
+      total_logs: totalLogs,
+      total_hours: totalHours,
+      message: "Shift logs processed successfully"
+    });
+  });
+
+  call.on('error', (err) => {
+    console.error("Error receiving logs:", err);
+  });
+}
 main();
