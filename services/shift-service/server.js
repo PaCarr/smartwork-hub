@@ -3,7 +3,14 @@ const protoLoader = require('@grpc/proto-loader');
 
 // Load proto
 const packageDefinition = protoLoader.loadSync(
-  __dirname + '/../../protos/shift.proto'
+  __dirname + '/../../protos/shift.proto',
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  }
 );
 
 const shiftProto = grpc.loadPackageDefinition(packageDefinition).shift;
