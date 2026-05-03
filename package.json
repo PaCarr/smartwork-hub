@@ -23,6 +23,7 @@
   "homepage": "https://github.com/PaCarr/smartwork-hub#readme",
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
-    "@grpc/proto-loader": "^0.8.0"
+    "@grpc/proto-loader": "^0.8.0",
+    "express": "^5.2.1"
   }
 }
