@@ -9,6 +9,34 @@
   <h1>SmartWork Hub</h1>
 
   <h2>Shift Service</h2>
+  
+<hr>
+
+<h2>Safety Service</h2>
+
+<input id="hazardId" placeholder="Hazard ID">
+<input id="hazardLocation" placeholder="Location">
+<input id="hazardDescription" placeholder="Description">
+<input id="hazardSeverity" placeholder="Severity 1-5">
+
+<button onclick="reportHazard()">Report Hazard</button>
+
+<h3>Safety Output:</h3>
+<pre id="safetyOutput"></pre>
+
+<hr>
+
+<h2>Productivity Service</h2>
+
+<input id="taskId" placeholder="Task ID">
+<input id="taskEmployeeName" placeholder="Employee Name">
+<input id="taskName" placeholder="Task Name">
+<input id="deadline" placeholder="Deadline">
+
+<button onclick="createTask()">Create Task</button>
+
+<h3>Productivity Output:</h3>
+<pre id="productivityOutput"></pre>
 
   <input id="employeeName" placeholder="Employee Name">
   <input id="shiftDate" placeholder="Date (YYYY-MM-DD)">

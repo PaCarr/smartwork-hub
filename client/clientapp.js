@@ -35,6 +35,60 @@ app.post('/assignShift', (req, res) => {
   });
 });
 
+app.post('/reportHazard', (req, res) => {
+  safetyClient.ReportHazard(req.body, (err, response) => {
+    if (err) {
+      return res.status(500).send(err.details);
+    }
+    res.send(response);
+  });
+});
+
+app.post('/createTask', (req, res) => {
+  productivityClient.CreateTask(req.body, (err, response) => {
+    if (err) {
+      return res.status(500).send(err.details);
+    }
+    res.send(response);
+  });
+});
+
+// Load Safety Proto
+const safetyPackage = protoLoader.loadSync(
+  __dirname + '/../protos/safety.proto',
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  }
+);
+const safetyProto = grpc.loadPackageDefinition(safetyPackage).safety;
+
+const safetyClient = new safetyProto.SafetyService(
+  'localhost:50052',
+  grpc.credentials.createInsecure()
+);
+
+// Load Productivity Proto
+const productivityPackage = protoLoader.loadSync(
+  __dirname + '/../protos/productivity.proto',
+  {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+  }
+);
+const productivityProto = grpc.loadPackageDefinition(productivityPackage).productivity;
+
+const productivityClient = new productivityProto.ProductivityService(
+  'localhost:50053',
+  grpc.credentials.createInsecure()
+);
+
 // Start server
 app.listen(3000, () => {
   console.log('GUI running at http://localhost:3000');
